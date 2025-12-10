@@ -3,51 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JLPT N3 – Menu các buổi học</title>
+    <title>Menu từ vựng các buổi học</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Poppins", sans-serif;
         background: #f4f6fb;
         margin: 0;
-        padding: 40px;
+        padding: 40px 20px;
       }
+
       h1 {
         text-align: center;
         color: #333;
+        font-weight: 600;
+        margin-bottom: 28px;
       }
+
       .menu {
         max-width: 480px;
         margin: 0 auto;
         background: #fff;
         padding: 20px 24px;
-        border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       }
+
       .item {
-        padding: 12px 16px;
-        margin: 10px 0;
+        padding: 14px 16px;
+        margin: 12px 0;
         background: #eef1ff;
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 1.05rem;
         font-weight: 600;
         color: #222;
         text-decoration: none;
-        display: block;
-        transition: 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.25s ease;
       }
+
+      .item i {
+        color: #4f46e5;
+        font-size: 1.2rem;
+      }
+
       .item:hover {
-        background: #d5dbff;
+        background: #dbe0ff;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 22px;
+        font-size: 0.8rem;
+        color: #777;
       }
     </style>
   </head>
   <body>
-    <h1>📘Quiz Từ Vựng N3</h1>
+    <h1>📘 Từ Vựng N3</h1>
 
     <div class="menu">
-      <a class="item" href="buoi1.html">Buổi 1 – 50 từ vựng Unit 1</a>
-      <!-- Sau này bạn thêm tiếp:
-    <a class="item" href="buoi2.html">Buổi 2 – ...</a>
-    --></div>
+      <a class="item" href="buoi1.html">
+        <i class="fa-solid fa-book"></i>
+        Buổi 1 – từ vựng (9-12-2025)
+      </a>
+      <a class="item" href="buoi2.html">
+        <i class="fa-solid fa-book"></i>
+        Buổi 2 – từ vựng (11-12-2025)
+      </a>
+    </div>
+
+    <div class="footer">
+      © Bản quyền thuộc về Nguyễn Văn Tiến & ChatGPT – 2025
+    </div>
   </body>
 </html>
