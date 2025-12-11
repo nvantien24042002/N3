@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N3 Lesson 1</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter",
+          sans-serif;
+        background: #f2f3f7;
+        color: #333;
+      }
+      .wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 28px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        margin: 0 0 6px 0;
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .subtitle {
+        margin-bottom: 20px;
+        color: #666;
+      }
+      .tag {
+        background: #eef;
+        padding: 6px 12px;
+        border-radius: 50px;
+        display: inline-block;
+        font-size: 14px;
+      }
+
+      .question-card {
+        margin-top: 26px;
+        padding: 22px;
+        background: #fafafa;
+        border-radius: 14px;
+        border: 1px solid #e7e7e7;
+      }
+      .kanji-big {
+        font-size: 70px;
+        font-weight: bold;
+        margin-bottom: 14px;
+        text-align: center;
+      }
+      .opt {
+        padding: 12px 16px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: 0.18s;
+      }
+      .opt:hover {
+        background: #f5f5ff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      }
+      .correct {
+        background: #d4ffe0 !important;
+        border-color: #46c46d !important;
+      }
+      .wrong {
+        background: #ffe0e0 !important;
+        border-color: #ff6b6b !important;
+      }
+
+      button {
+        padding: 10px 20px;
+        background: #6a5df5;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      /* Ẩn nút Câu tiếp ở dưới card vì dùng nút trong modal */
+      #nextBtn {
+        display: none;
+      }
+
+      /* ===== MODAL ===== */
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+      }
+      .modal {
+        background: #fff;
+        width: 92%;
+        max-width: 520px;
+        padding: 22px 22px 18px;
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+        animation: pop 0.2s ease;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.85);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .modal .kanji-big {
+        margin-bottom: 6px;
+      }
+      .info-line {
+        margin-bottom: 6px;
+        font-size: 15px;
+      }
+      .info-line strong {
+        font-weight: 600;
+      }
+
+      .compound-title {
+        margin-top: 10px;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .compound-grid {
+        margin-top: 8px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+      }
+      .comp-card {
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+        padding: 8px 10px;
+        text-align: center;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .comp-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+      }
+      .comp-kanji {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .comp-kana {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 2px;
+      }
+      .comp-mean {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .modal-btns {
+        margin-top: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .btn-gray {
+        background: #bbb !important;
+      }
+
+      footer {
+        text-align: center;
+        margin: 40px 0 30px;
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <h1>N3 Kanji – Week 1 (Go Out)</h1>
+      <div class="subtitle">
+        Chọn nghĩa đúng • Mở modal để xem chi tiết & từ ghép
+      </div>
+
+      <div class="tag">
+        Câu: <span id="qIndex">1</span> / <span id="qTotal">0</span>
+      </div>
+
+      <div class="question-card">
+        <div id="kanjiText" class="kanji-big">駐</div>
+        <div id="optionsBox"></div>
+        <button id="nextBtn" disabled>➡ Câu tiếp</button>
+      </div>
+    </div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-bg" id="modalBg">
+      <div class="modal">
+        <div id="mKanji" class="kanji-big"></div>
+        <div id="mKana" class="info-line"></div>
+        <div id="mOn" class="info-line"></div>
+        <div id="mKun" class="info-line"></div>
+        <div id="mMean" class="info-line"></div>
+        <div id="mJP" class="info-line"></div>
+        <div id="mVI" class="info-line"></div>
+
+        <div id="compoundBlock">
+          <div class="compound-title">Từ ghép:</div>
+          <div class="compound-grid" id="compoundGrid"></div>
+        </div>
+
+        <div class="modal-btns">
+          <button class="btn-gray" onclick="closeModal()">Đóng</button>
+          <button onclick="nextQuestion()">Câu tiếp ➜</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>© Nguyễn Văn Tiến & ChatGPT – Mimi N3 Kanji Week 1</footer>
+
+    <script>
+      /* ====================== FULL DATA KANJI + COMPOUNDS ====================== */
+      const vocabList = [
+        {
+          id: 1,
+          kanji: "駐",
+          kana: "チュウ",
+          onyomi: "チュウ",
+          kunyomi: "",
+          meaning: "đỗ xe, cư trú",
+          exampleJP: "駐車場に車を止める。",
+          exampleVI: "Đỗ xe trong bãi đỗ xe.",
+          compounds: [
+            { word: "駐車", kana: "ちゅうしゃ", vi: "đỗ xe" },
+            { word: "駐車場", kana: "ちゅうしゃじょう", vi: "bãi đỗ xe" },
+          ],
+        },
+        {
+          id: 2,
+          kanji: "無",
+          kana: "ム／ブ",
+          onyomi: "ム・ブ",
+          kunyomi: "ない",
+          meaning: "không, vô",
+          exampleJP: "無理をしないでください。",
+          exampleVI: "Đừng cố quá.",
+          compounds: [
+            { word: "無休", kana: "むきゅう", vi: "không nghỉ" },
+            { word: "無理（な）", kana: "むり（な）", vi: "vô lý, quá sức" },
+            { word: "無料", kana: "むりょう", vi: "miễn phí" },
+            { word: "無い", kana: "ない", vi: "không có" },
+          ],
+        },
+        {
+          id: 3,
+          kanji: "満",
+          kana: "マン",
+          onyomi: "マン",
+          kunyomi: "み-ちる",
+          meaning: "đầy, mãn",
+          exampleJP: "駐車場は満車です。",
+          exampleVI: "Bãi đỗ xe đã đầy.",
+          compounds: [
+            { word: "満車", kana: "まんしゃ", vi: "đầy xe" },
+            { word: "不満（な）", kana: "ふまん（な）", vi: "bất mãn" },
+          ],
+        },
+        {
+          id: 4,
+          kanji: "向",
+          kana: "コウ",
+          onyomi: "コウ",
+          kunyomi: "む-く／む-かう",
+          meaning: "hướng, hướng về",
+          exampleJP: "駅の方向へ向かう。",
+          exampleVI: "Hướng về phía nhà ga.",
+          compounds: [
+            { word: "方向", kana: "ほうこう", vi: "phương hướng" },
+            { word: "向かう", kana: "むかう", vi: "hướng tới" },
+          ],
+        },
+        {
+          id: 5,
+          kanji: "禁",
+          kana: "キン",
+          onyomi: "キン",
+          kunyomi: "",
+          meaning: "cấm",
+          exampleJP: "ここは禁煙です。",
+          exampleVI: "Ở đây cấm hút thuốc.",
+          compounds: [{ word: "禁止", kana: "きんし", vi: "cấm đoán" }],
+        },
+        {
+          id: 6,
+          kanji: "関",
+          kana: "カン",
+          onyomi: "カン",
+          kunyomi: "かか-わる・せき",
+          meaning: "liên quan, quan hệ",
+          exampleJP: "この問題に関心があります。",
+          exampleVI: "Tôi có quan tâm đến vấn đề này.",
+          compounds: [{ word: "関心", kana: "かんしん", vi: "quan tâm" }],
+        },
+        {
+          id: 7,
+          kanji: "係",
+          kana: "ケイ",
+          onyomi: "ケイ",
+          kunyomi: "かか-り",
+          meaning: "người phụ trách",
+          exampleJP: "係の人に聞いてください。",
+          exampleVI: "Hãy hỏi người phụ trách.",
+          compounds: [
+            { word: "関係", kana: "かんけい", vi: "mối quan hệ, liên quan" },
+            { word: "係", kana: "かかり", vi: "người phụ trách" },
+          ],
+        },
+        {
+          id: 8,
+          kanji: "断",
+          kana: "ダン",
+          onyomi: "ダン",
+          kunyomi: "ことわ-る",
+          meaning: "từ chối, cắt đứt",
+          exampleJP: "彼のお願いを断った。",
+          exampleVI: "Tôi đã từ chối lời nhờ vả của anh ấy.",
+          compounds: [
+            { word: "無断", kana: "むだん", vi: "không xin phép" },
+            { word: "断る", kana: "ことわる", vi: "từ chối" },
+          ],
+        },
+        {
+          id: 9,
+          kanji: "横",
+          kana: "ヨコ",
+          onyomi: "オウ",
+          kunyomi: "よこ",
+          meaning: "ngang, bên cạnh",
+          exampleJP: "横断歩道を渡る。",
+          exampleVI: "Băng qua lối băng qua đường.",
+          compounds: [
+            { word: "横断", kana: "おうだん", vi: "băng ngang (đường)" },
+            { word: "横", kana: "よこ", vi: "bên cạnh, ngang, bên hông" },
+          ],
+        },
+        {
+          id: 10,
+          kanji: "押",
+          kana: "お-す",
+          onyomi: "オウ",
+          kunyomi: "お-す／お-さえる",
+          meaning: "ấn, đẩy",
+          exampleJP: "ボタンを押してください。",
+          exampleVI: "Hãy nhấn nút.",
+          compounds: [
+            { word: "押す", kana: "おす", vi: "ấn, nhấn" },
+            { word: "押し入れ", kana: "おしいれ", vi: "tủ tường, tủ âm tường" },
+            {
+              word: "押しボタン式",
+              kana: "おしボタンしき",
+              vi: "kiểu có nút nhấn",
+            },
+            { word: "押さえる", kana: "おさえる", vi: "giữ lại, đè giữ" },
+          ],
+        },
+        {
+          id: 11,
+          kanji: "式",
+          kana: "シキ",
+          onyomi: "シキ",
+          kunyomi: "",
+          meaning: "nghi thức, kiểu, công thức",
+          exampleJP: "入学式に出席する。",
+          exampleVI: "Tham dự lễ nhập học.",
+          compounds: [
+            { word: "数式", kana: "すうしき", vi: "công thức số" },
+            { word: "入学式", kana: "にゅうがくしき", vi: "lễ nhập học" },
+          ],
+        },
+        {
+          id: 12,
+          kanji: "信",
+          kana: "シン",
+          onyomi: "シン",
+          kunyomi: "",
+          meaning: "tin tưởng, tín hiệu",
+          exampleJP: "自分を信じてください。",
+          exampleVI: "Hãy tin vào bản thân.",
+          compounds: [
+            { word: "送信", kana: "そうしん", vi: "gửi (tín hiệu, mail)" },
+            { word: "自信", kana: "じしん", vi: "tự tin" },
+            { word: "信号", kana: "しんごう", vi: "đèn tín hiệu" },
+            { word: "信じる", kana: "しんじる", vi: "tin, tin tưởng" },
+            { word: "信用", kana: "しんよう", vi: "tin dùng, tín nhiệm" },
+          ],
+        },
+        {
+          id: 13,
+          kanji: "号",
+          kana: "ゴウ",
+          onyomi: "ゴウ",
+          kunyomi: "",
+          meaning: "số hiệu, ký hiệu",
+          exampleJP: "この列車は３号車まであります。",
+          exampleVI: "Tàu này có tới toa số 3.",
+          compounds: [
+            { word: "〜号車", kana: "〜ごうしゃ", vi: "toa số ~ (tàu)" },
+          ],
+        },
+        {
+          id: 14,
+          kanji: "確",
+          kana: "カク",
+          onyomi: "カク",
+          kunyomi: "たし-か／たし-かめる",
+          meaning: "chắc chắn, xác nhận",
+          exampleJP: "予定を確認してください。",
+          exampleVI: "Hãy xác nhận lại lịch.",
+          compounds: [
+            { word: "正確（な）", kana: "せいかく（な）", vi: "chính xác" },
+            { word: "確か（な）", kana: "たしか（な）", vi: "chắc, chắc chắn" },
+            { word: "確認", kana: "かくにん", vi: "sự xác nhận" },
+            {
+              word: "確かめる",
+              kana: "たしかめる",
+              vi: "xác nhận, kiểm chứng",
+            },
+          ],
+        },
+        {
+          id: 15,
+          kanji: "認",
+          kana: "ニン",
+          onyomi: "ニン",
+          kunyomi: "みと-める",
+          meaning: "công nhận, chấp nhận",
+          exampleJP: "彼の努力を認める。",
+          exampleVI: "Công nhận nỗ lực của anh ấy.",
+          compounds: [
+            { word: "認める", kana: "みとめる", vi: "thừa nhận, chấp nhận" },
+          ],
+        },
+        {
+          id: 16,
+          kanji: "飛",
+          kana: "ヒ",
+          onyomi: "ヒ",
+          kunyomi: "と-ぶ",
+          meaning: "bay",
+          exampleJP: "鳥が空を飛んでいる。",
+          exampleVI: "Chim đang bay trên trời.",
+          compounds: [
+            { word: "飛行場", kana: "ひこうじょう", vi: "sân bay" },
+            { word: "飛ぶ", kana: "とぶ", vi: "bay" },
+          ],
+        },
+      ];
+
+      document.getElementById("qTotal").textContent = vocabList.length;
+
+      /* ====================== QUIZ LOGIC ====================== */
+      let index = 0;
+      let shuffled = shuffle([...vocabList]);
+      let currentQ = null;
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function loadQuestion() {
+        currentQ = shuffled[index];
+        document.getElementById("qIndex").textContent = index + 1;
+        document.getElementById("kanjiText").textContent = currentQ.kanji;
+
+        let wrong = vocabList.filter((i) => i.meaning !== currentQ.meaning);
+        wrong = shuffle(wrong).slice(0, 3);
+
+        let opts = shuffle([currentQ, ...wrong]);
+        const box = document.getElementById("optionsBox");
+        box.innerHTML = "";
+
+        opts.forEach((o) => {
+          const div = document.createElement("div");
+          div.className = "opt";
+          div.textContent = o.meaning;
+          div.onclick = () => choose(o, currentQ, div);
+          box.appendChild(div);
+        });
+      }
+
+      /* ====================== LƯU TỪ SAI ====================== */
+      const STORAGE_KEY = "mimi_n3_kanji_week1_wrong";
+
+      function saveWrong(item) {
+        let list = [];
+        try {
+          list = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        } catch (_) {
+          list = [];
+        }
+        if (!list.some((w) => w.kanji === item.kanji)) {
+          list.push(item);
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      }
+
+      /* ====================== CHỌN ĐÁP ÁN ====================== */
+      function choose(selected, correct, div) {
+        const btns = document.querySelectorAll(".opt");
+        btns.forEach((b) => (b.onclick = null));
+
+        if (selected.meaning === correct.meaning) {
+          div.classList.add("correct");
+        } else {
+          div.classList.add("wrong");
+          [...btns]
+            .find((b) => b.textContent === correct.meaning)
+            .classList.add("correct");
+          // Lưu từ sai
+          saveWrong(correct);
+        }
+
+        showModal(correct);
+      }
+
+      /* ====================== MODAL ====================== */
+      function showModal(q) {
+        document.getElementById("mKanji").textContent = q.kanji;
+        document.getElementById("mKana").innerHTML =
+          "<strong>KANA:</strong> " + (q.kana || "");
+        document.getElementById("mOn").innerHTML =
+          "<strong>音読み:</strong> " + (q.onyomi || "");
+        document.getElementById("mKun").innerHTML =
+          "<strong>訓読み:</strong> " + (q.kunyomi || "");
+        document.getElementById("mMean").innerHTML =
+          "<strong>Nghĩa:</strong> " + q.meaning;
+        document.getElementById("mJP").innerHTML =
+          "<strong>例文:</strong> " + q.exampleJP;
+        document.getElementById("mVI").innerHTML =
+          "<strong>→</strong> " + q.exampleVI;
+
+        const grid = document.getElementById("compoundGrid");
+        grid.innerHTML = "";
+        const block = document.getElementById("compoundBlock");
+
+        if (q.compounds && q.compounds.length > 0) {
+          block.style.display = "block";
+          q.compounds.forEach((c) => {
+            const card = document.createElement("div");
+            card.className = "comp-card";
+            card.innerHTML = `
+        <div class="comp-kanji">${c.word}</div>
+        <div class="comp-kana">${c.kana}</div>
+        <div class="comp-mean">${c.vi}</div>
+      `;
+            grid.appendChild(card);
+          });
+        } else {
+          block.style.display = "none";
+        }
+
+        document.getElementById("modalBg").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("modalBg").style.display = "none";
+      }
+
+      function nextQuestion() {
+        closeModal();
+        index++;
+        if (index >= shuffled.length) {
+          index = 0;
+          shuffled = shuffle([...vocabList]);
+        }
+        loadQuestion();
+      }
+
+      /* START */
+      loadQuestion();
+    </script>
+  </body>
+</html>
