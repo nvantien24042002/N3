@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N3 – Vocabulary</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(
+          circle at top,
+          #eef2ff 0,
+          #f4f5fb 55%,
+          #e5e7eb 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px;
+        color: #111827;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 860px;
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 14px 40px rgba(15, 23, 42, 0.18);
+        padding: 16px 16px 14px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+      }
+
+      .header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 10px;
+      }
+
+      .title-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .title {
+        font-size: 1.08rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+
+      .subtitle {
+        margin-top: 3px;
+        font-size: 0.86rem;
+        color: #6b7280;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 0.78rem;
+        font-weight: 700;
+        border: 1px solid #e0e7ff;
+      }
+
+      .pill.gray {
+        background: #f3f4f6;
+        border-color: #e5e7eb;
+        color: #374151;
+        font-weight: 650;
+      }
+
+      .pill.warn {
+        background: #fff7ed;
+        border-color: #fdba74;
+        color: #b45309;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        border-radius: 999px;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.15s;
+        white-space: nowrap;
+      }
+
+      .btn:hover {
+        background: #f3f4ff;
+        border-color: #c7d2fe;
+        transform: translateY(-1px);
+      }
+
+      .btn.primary {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        border: none;
+        color: #fff;
+        box-shadow: 0 5px 14px rgba(79, 70, 229, 0.35);
+      }
+
+      .btn.primary:hover {
+        filter: brightness(0.98);
+      }
+
+      .btn.danger {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #991b1b;
+      }
+
+      .btn:disabled {
+        opacity: 0.55;
+        cursor: default;
+        transform: none;
+      }
+
+      .toggles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .seg {
+        display: inline-flex;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #f9fafb;
+      }
+
+      .seg button {
+        border: none;
+        background: transparent;
+        padding: 7px 10px;
+        font-weight: 800;
+        font-size: 0.8rem;
+        cursor: pointer;
+        color: #6b7280;
+      }
+
+      .seg button.active {
+        background: #4f46e5;
+        color: #fff;
+      }
+
+      .progress-wrap {
+        margin-top: 2px;
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: #e5e7eb;
+        overflow: hidden;
+      }
+
+      .progress {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #4f46e5, #22c55e);
+        transition: width 0.2s ease;
+      }
+
+      .card {
+        margin-top: 12px;
+        padding: 14px;
+        border-radius: 16px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
+
+      .label {
+        font-size: 0.78rem;
+        color: #6b7280;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      .word {
+        font-size: 1.22rem;
+        font-weight: 900;
+        line-height: 1.35;
+      }
+
+      .sub {
+        margin-top: 6px;
+        font-size: 0.92rem;
+        color: #4b5563;
+      }
+
+      .meta {
+        margin-top: 6px;
+        font-size: 0.8rem;
+        color: #6b7280;
+      }
+
+      .options {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .option-btn {
+        width: 100%;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        padding: 10px 12px;
+        background: #ffffff;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        transition: background 0.15s ease, transform 0.04s ease,
+          border-color 0.12s ease, box-shadow 0.15s ease;
+        min-height: 46px; /* mobile tap */
+      }
+
+      .option-btn:hover:not(:disabled) {
+        background: #f3f4ff;
+        border-color: #c7d2fe;
+        box-shadow: 0 3px 10px rgba(79, 70, 229, 0.18);
+        transform: translateY(-1px);
+      }
+
+      .opt-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .opt-key {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        color: #6b7280;
+        font-size: 0.8rem;
+        font-weight: 900;
+        flex: 0 0 auto;
+      }
+
+      .opt-main {
+        color: #111827;
+      }
+
+      .opt-sub {
+        font-size: 0.82rem;
+        color: #6b7280;
+        font-weight: 750;
+      }
+
+      .option-btn.correct {
+        background: #ecfdf3;
+        border-color: #22c55e;
+      }
+
+      .option-btn.wrong {
+        background: #fef2f2;
+        border-color: #f87171;
+      }
+
+      .option-btn:disabled {
+        cursor: default;
+        opacity: 0.95;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .feedback {
+        margin-top: 12px;
+        display: none;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px dashed #e5e7eb;
+        background: #ffffff;
+      }
+
+      .fb-title {
+        font-weight: 900;
+        margin-bottom: 6px;
+      }
+
+      .fb-title.ok {
+        color: #15803d;
+      }
+
+      .fb-title.no {
+        color: #b91c1c;
+      }
+
+      .fb-line {
+        font-size: 0.92rem;
+        margin-bottom: 4px;
+      }
+
+      .controls {
+        margin-top: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .hint {
+        margin-top: 8px;
+        font-size: 0.78rem;
+        color: #6b7280;
+      }
+
+      .stats {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 14px;
+        background: #ffffff;
+        border: 1px dashed #e5e7eb;
+      }
+
+      .stats h3 {
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+      }
+
+      .stats p {
+        font-size: 0.82rem;
+        color: #6b7280;
+        margin-bottom: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+
+      th,
+      td {
+        padding: 6px 6px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      th {
+        background: #f9fafb;
+        color: #4b5563;
+        font-weight: 900;
+      }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #b91c1c;
+        font-weight: 900;
+        font-size: 0.72rem;
+        margin-left: 6px;
+      }
+
+      .footer {
+        margin-top: 10px;
+        font-size: 0.72rem;
+        color: #9ca3af;
+        text-align: right;
+      }
+
+      /* ====== MODAL (bottom sheet) ====== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+        display: none;
+        justify-content: flex-end;
+        align-items: flex-end;
+        z-index: 9999;
+        padding: 10px;
+      }
+
+      .modal-box {
+        width: 100%;
+        max-width: 760px;
+        background: #ffffff;
+        border-radius: 18px 18px 0 0;
+        padding: 14px 14px 12px;
+        box-shadow: 0 -10px 26px rgba(0, 0, 0, 0.22);
+        max-height: 86vh;
+        overflow: auto; /* ✅ scroll trên điện thoại */
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .handle {
+        width: 44px;
+        height: 5px;
+        border-radius: 999px;
+        background: #d1d5db;
+        margin: 0 auto 10px;
+      }
+
+      .modal-box h3 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .modal-box p {
+        font-size: 0.84rem;
+        color: #6b7280;
+        margin-bottom: 10px;
+        line-height: 1.35;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 170px;
+        border-radius: 14px;
+        border: 1px solid #d1d5db;
+        padding: 10px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.85rem;
+        background: #f8fafc;
+        outline: none;
+      }
+
+      textarea:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+        background: #ffffff;
+      }
+
+      .modal-actions {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      @media (max-width: 640px) {
+        .app {
+          padding: 12px;
+          border-radius: 16px;
+        }
+        .word {
+          font-size: 1.08rem;
+        }
+        .btn {
+          padding: 8px 11px;
+        }
+        .option-btn {
+          padding: 10px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="header">
+        <div class="title-row">
+          <div>
+            <div class="title">Mimi N3 Unit 1 – Vocabulary Quiz OMEGA</div>
+            <div class="subtitle">
+              3 chế độ A/B/C · 4 đáp án · Lưu câu sai · Thống kê · Import JSON
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn primary" id="btnImportOpen">➕ Nhập JSON</button>
+            <button class="btn" id="btnExportUser">⬇ Xuất JSON</button>
+            <button class="btn danger" id="btnClearUser">
+              🗑 Xoá từ đã nhập
+            </button>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <div class="pills">
+            <span class="pill gray" id="pillProgress">Câu 1 / 50</span>
+            <span class="pill" id="pillMode">Mode A</span>
+            <span class="pill warn" id="pillWrong">Sai: 0</span>
+            <span class="pill gray"
+              >Điểm: <span id="scoreText">0</span>/<span id="answeredText"
+                >0</span
+              >
+              · Đúng: <span id="percentText">0</span>%</span
+            >
+          </div>
+
+          <div class="pills">
+            <div class="seg" aria-label="modes">
+              <button id="btnModeA" class="active" title="A: VI → JP">A</button>
+              <button id="btnModeB" title="B: JP → VI">B</button>
+              <button id="btnModeC" title="C: Kana → JP">C</button>
+            </div>
+
+            <div class="seg" aria-label="session size">
+              <button id="btnSize10" title="10 câu">10</button>
+              <button id="btnSize20" title="20 câu">20</button>
+              <button id="btnSize50" class="active" title="50 câu">50</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress" id="progressBar"></div>
+        </div>
+
+        <div class="hint">
+          Gợi ý: desktop dùng phím <b>A,B,C,D</b> chọn đáp án ·
+          <b>Enter</b> sang câu tiếp. (Điện thoại cứ bấm bình thường nha)
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label" id="promptLabel">Nghĩa tiếng Việt</div>
+        <div class="word" id="wordText">nam giới</div>
+        <div class="sub" id="subText">Chọn từ tiếng Nhật tương ứng.</div>
+        <div class="meta" id="metaText">Chế độ A · Câu 1 / 50</div>
+
+        <div class="options" id="options"></div>
+
+        <div class="feedback" id="feedback">
+          <div class="fb-title" id="fbTitle"></div>
+          <div class="fb-line" id="fbRight"></div>
+          <div class="fb-line" id="fbJp"></div>
+          <div class="fb-line" id="fbVi"></div>
+          <div class="fb-line" id="fbSummary"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn primary" id="btnNext" disabled>➡ Câu tiếp</button>
+          <button class="btn" id="btnReview" disabled>🧪 Ôn câu sai</button>
+          <button class="btn" id="btnRestart">🔁 Làm lại</button>
+          <button class="btn danger" id="btnClearWrong">🧹 Xoá câu sai</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <h3>Top từ sai nhiều nhất</h3>
+        <p>
+          Dữ liệu lưu trong trình duyệt (mỗi thiết bị riêng). Import JSON sẽ tự
+          gộp vào quiz.
+        </p>
+        <div id="statsBox"></div>
+      </div>
+
+      <div class="footer">
+        © Nguyễn Văn Tiến &amp; ChatGPT – Vocabulary Quiz OMEGA
+      </div>
+    </div>
+
+    <!-- ===== MODAL IMPORT JSON ===== -->
+    <div class="modal-overlay" id="modalImport">
+      <div class="modal-box">
+        <div class="handle"></div>
+        <h3>➕ Nhập JSON từ vựng</h3>
+        <p>
+          Dán <b>một mảng JSON</b> dạng <code>[{...},{...}]</code> vào ô dưới.
+          Mỗi item nên có: <b>kanji</b>, <b>kana</b>, <b>meaning</b>, <b>jp</b>,
+          <b>vi</b>.
+          <br />
+          ✅ Bạn có thể thiếu <b>id</b> (mình tự tạo).<br />
+          Ví dụ:
+          <br />
+          <code>
+            [{"kanji":"男性","kana":"だんせい","meaning":"nam
+            giới","jp":"...","vi":"..."}]
+          </code>
+        </p>
+
+        <textarea id="importArea" placeholder="Dán JSON ở đây..."></textarea>
+
+        <div class="modal-actions">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button class="btn primary" id="btnDoImport">📥 Import</button>
+            <button class="btn" id="btnPasteSample">✨ Dán mẫu</button>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap">
+            <button class="btn" id="btnCloseImport">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /**********************
+       * 1) DATA DEFAULT
+       **********************/
+      const vocabDefault = [
+        {
+          id: 1,
+          kanji: "男性",
+          kana: "だんせい",
+          meaning: "nam giới",
+          jp: "その男性は先生です。",
+          vi: "Người đàn ông đó là giáo viên。",
+        },
+        {
+          id: 2,
+          kanji: "女性",
+          kana: "じょせい",
+          meaning: "phụ nữ",
+          jp: "あの女性はきれいです。",
+          vi: "Cô gái kia đẹp。",
+        },
+        {
+          id: 3,
+          kanji: "高齢",
+          kana: "こうれい",
+          meaning: "cao tuổi",
+          jp: "高齢の人に席をゆずります。",
+          vi: "Nhường ghế cho người cao tuổi。",
+        },
+        {
+          id: 4,
+          kanji: "年上",
+          kana: "としうえ",
+          meaning: "người lớn tuổi hơn",
+          jp: "彼は私より年上です。",
+          vi: "Anh ấy lớn tuổi hơn tôi。",
+        },
+        {
+          id: 5,
+          kanji: "目上",
+          kana: "めうえ",
+          meaning: "cấp trên",
+          jp: "目上の人には丁寧に話します。",
+          vi: "Nói chuyện lịch sự với người cấp trên。",
+        },
+        {
+          id: 6,
+          kanji: "先輩",
+          kana: "せんぱい",
+          meaning: "tiền bối",
+          jp: "先輩に仕事を教えてもらいました。",
+          vi: "Tôi được đàn anh chỉ việc。",
+        },
+        {
+          id: 7,
+          kanji: "後輩",
+          kana: "こうはい",
+          meaning: "hậu bối",
+          jp: "後輩を手伝ってあげた。",
+          vi: "Tôi giúp đỡ đàn em。",
+        },
+        {
+          id: 8,
+          kanji: "上司",
+          kana: "じょうし",
+          meaning: "cấp trên, sếp",
+          jp: "上司に相談します。",
+          vi: "Tôi hỏi ý kiến sếp。",
+        },
+        {
+          id: 9,
+          kanji: "相手",
+          kana: "あいて",
+          meaning: "đối phương",
+          jp: "相手の目を見て話す。",
+          vi: "Hãy nhìn vào mắt đối phương khi nói。",
+        },
+        {
+          id: 10,
+          kanji: "知り合い",
+          kana: "しりあい",
+          meaning: "người quen",
+          jp: "彼は会社の知り合いです。",
+          vi: "Anh ấy là người quen ở công ty。",
+        },
+        {
+          id: 11,
+          kanji: "友人",
+          kana: "ゆうじん",
+          meaning: "bạn thân",
+          jp: "友人と旅行します。",
+          vi: "Tôi đi du lịch với bạn thân。",
+        },
+        {
+          id: 12,
+          kanji: "仲",
+          kana: "なか",
+          meaning: "mối quan hệ",
+          jp: "二人は仲がいい。",
+          vi: "Hai người họ rất thân。",
+        },
+        {
+          id: 13,
+          kanji: "生年月日",
+          kana: "せいねんがっぴ",
+          meaning: "ngày tháng năm sinh",
+          jp: "生年月日を書いてください。",
+          vi: "Hãy viết ngày tháng năm sinh。",
+        },
+        {
+          id: 14,
+          kanji: "誕生",
+          kana: "たんじょう",
+          meaning: "sinh ra",
+          jp: "子供の誕生を祝います。",
+          vi: "Chúc mừng sự ra đời của em bé。",
+        },
+        {
+          id: 15,
+          kanji: "年",
+          kana: "とし",
+          meaning: "năm, tuổi",
+          jp: "年をとっても元気です。",
+          vi: "Dù lớn tuổi vẫn khỏe。",
+        },
+        {
+          id: 16,
+          kanji: "出身",
+          kana: "しゅっしん",
+          meaning: "xuất thân",
+          jp: "私はハノイ出身です。",
+          vi: "Tôi đến từ Hà Nội。",
+        },
+        {
+          id: 17,
+          kanji: "故郷",
+          kana: "こきょう",
+          meaning: "quê hương",
+          jp: "久しぶりに故郷へ帰った。",
+          vi: "Lâu rồi tôi mới về quê。",
+        },
+        {
+          id: 18,
+          kanji: "成長",
+          kana: "せいちょう",
+          meaning: "trưởng thành, phát triển",
+          jp: "子供は早く成長します。",
+          vi: "Trẻ con lớn nhanh。",
+        },
+        {
+          id: 19,
+          kanji: "成人",
+          kana: "せいじん",
+          meaning: "người trưởng thành",
+          jp: "彼は今年成人した。",
+          vi: "Anh ấy trưởng thành năm nay。",
+        },
+        {
+          id: 20,
+          kanji: "合格",
+          kana: "ごうかく",
+          meaning: "đỗ, đậu",
+          jp: "試験に合格した。",
+          vi: "Tôi đỗ kỳ thi。",
+        },
+        {
+          id: 21,
+          kanji: "進学",
+          kana: "しんがく",
+          meaning: "học lên cao",
+          jp: "大学に進学します。",
+          vi: "Tôi học lên đại học。",
+        },
+        {
+          id: 22,
+          kanji: "退学",
+          kana: "たいがく",
+          meaning: "thôi học",
+          jp: "彼は病気で退学した。",
+          vi: "Anh ấy thôi học vì bệnh。",
+        },
+        {
+          id: 23,
+          kanji: "就職",
+          kana: "しゅうしょく",
+          meaning: "tìm việc, đi làm",
+          jp: "大手会社に就職した。",
+          vi: "Tôi xin được việc ở công ty lớn。",
+        },
+        {
+          id: 24,
+          kanji: "退職",
+          kana: "たいしょく",
+          meaning: "nghỉ việc",
+          jp: "父は今年退職する。",
+          vi: "Ba tôi nghỉ việc năm nay。",
+        },
+        {
+          id: 25,
+          kanji: "失業",
+          kana: "しつぎょう",
+          meaning: "thất nghiệp",
+          jp: "失業して困っている。",
+          vi: "Tôi thất nghiệp và gặp khó khăn。",
+        },
+        {
+          id: 26,
+          kanji: "残業",
+          kana: "ざんぎょう",
+          meaning: "làm thêm",
+          jp: "今日は残業があります。",
+          vi: "Hôm nay tôi phải làm thêm。",
+        },
+        {
+          id: 27,
+          kanji: "生活",
+          kana: "せいかつ",
+          meaning: "cuộc sống",
+          jp: "日本での生活に慣れた。",
+          vi: "Tôi quen với cuộc sống ở Nhật。",
+        },
+        {
+          id: 28,
+          kanji: "通勤",
+          kana: "つうきん",
+          meaning: "đi làm",
+          jp: "毎日電車で通勤している。",
+          vi: "Hằng ngày tôi đi làm bằng tàu。",
+        },
+        {
+          id: 29,
+          kanji: "学歴",
+          kana: "がくれき",
+          meaning: "học vấn",
+          jp: "学歴より実力が大事だ。",
+          vi: "Năng lực quan trọng hơn học vấn。",
+        },
+        {
+          id: 30,
+          kanji: "給料",
+          kana: "きゅうりょう",
+          meaning: "lương",
+          jp: "今月の給料をもらった。",
+          vi: "Tôi đã nhận lương tháng này。",
+        },
+        {
+          id: 31,
+          kanji: "面接",
+          kana: "めんせつ",
+          meaning: "phỏng vấn",
+          jp: "今日は面接があります。",
+          vi: "Hôm nay tôi có phỏng vấn。",
+        },
+        {
+          id: 32,
+          kanji: "休憩",
+          kana: "きゅうけい",
+          meaning: "nghỉ giải lao",
+          jp: "少し休憩しましょう。",
+          vi: "Nghỉ một chút nhé。",
+        },
+        {
+          id: 33,
+          kanji: "観光",
+          kana: "かんこう",
+          meaning: "tham quan",
+          jp: "京都を観光したい。",
+          vi: "Tôi muốn tham quan Kyoto。",
+        },
+        {
+          id: 34,
+          kanji: "帰国",
+          kana: "きこく",
+          meaning: "về nước",
+          jp: "来月帰国します。",
+          vi: "Tháng sau tôi về nước。",
+        },
+        {
+          id: 35,
+          kanji: "帰省",
+          kana: "きせい",
+          meaning: "về quê",
+          jp: "正月に帰省します。",
+          vi: "Tết tôi về quê。",
+        },
+        {
+          id: 36,
+          kanji: "帰宅",
+          kana: "きたく",
+          meaning: "về nhà",
+          jp: "毎日9時に帰宅する。",
+          vi: "Hằng ngày tôi về nhà lúc 9 giờ。",
+        },
+        {
+          id: 37,
+          kanji: "参加",
+          kana: "さんか",
+          meaning: "tham gia",
+          jp: "イベントに参加します。",
+          vi: "Tôi tham gia sự kiện。",
+        },
+        {
+          id: 38,
+          kanji: "出席",
+          kana: "しゅっせき",
+          meaning: "có mặt, tham dự",
+          jp: "会議に出席した。",
+          vi: "Tôi có mặt trong cuộc họp。",
+        },
+        {
+          id: 39,
+          kanji: "欠席",
+          kana: "けっせき",
+          meaning: "vắng mặt",
+          jp: "今日は欠席します。",
+          vi: "Hôm nay tôi vắng mặt。",
+        },
+        {
+          id: 40,
+          kanji: "遅刻",
+          kana: "ちこく",
+          meaning: "đi trễ",
+          jp: "授業に遅刻した。",
+          vi: "Tôi đi học trễ。",
+        },
+        {
+          id: 41,
+          kanji: "化粧",
+          kana: "けしょう",
+          meaning: "trang điểm",
+          jp: "毎朝化粧をします。",
+          vi: "Tôi trang điểm mỗi sáng。",
+        },
+        {
+          id: 42,
+          kanji: "計算",
+          kana: "けいさん",
+          meaning: "tính toán",
+          jp: "料金を計算してください。",
+          vi: "Hãy tính tiền giúp tôi。",
+        },
+        {
+          id: 43,
+          kanji: "計画",
+          kana: "けいかく",
+          meaning: "kế hoạch",
+          jp: "旅行の計画を立てる。",
+          vi: "Lập kế hoạch du lịch。",
+        },
+        {
+          id: 44,
+          kanji: "成功",
+          kana: "せいこう",
+          meaning: "thành công",
+          jp: "計画は成功した。",
+          vi: "Kế hoạch đã thành công。",
+        },
+        {
+          id: 45,
+          kanji: "失敗",
+          kana: "しっぱい",
+          meaning: "thất bại",
+          jp: "テストで失敗した。",
+          vi: "Tôi thất bại trong bài kiểm tra。",
+        },
+        {
+          id: 46,
+          kanji: "準備",
+          kana: "じゅんび",
+          meaning: "chuẩn bị",
+          jp: "会議の準備をする。",
+          vi: "Chuẩn bị cho cuộc họp。",
+        },
+        {
+          id: 47,
+          kanji: "整理",
+          kana: "せいり",
+          meaning: "sắp xếp",
+          jp: "机を整理した。",
+          vi: "Tôi sắp xếp bàn làm việc。",
+        },
+        {
+          id: 48,
+          kanji: "注文",
+          kana: "ちゅうもん",
+          meaning: "gọi món, đặt hàng",
+          jp: "コーヒーを注文した。",
+          vi: "Tôi gọi cà phê。",
+        },
+        {
+          id: 49,
+          kanji: "貯金",
+          kana: "ちょきん",
+          meaning: "tiết kiệm tiền",
+          jp: "毎月貯金している。",
+          vi: "Tôi tiết kiệm mỗi tháng。",
+        },
+        {
+          id: 50,
+          kanji: "徹夜",
+          kana: "てつや",
+          meaning: "thức khuya, thức trắng đêm",
+          jp: "昨日は徹夜した。",
+          vi: "Tôi đã thức trắng đêm hôm qua。",
+        },
+      ];
+
+      /**********************
+       * 2) STORAGE KEYS
+       **********************/
+      const USER_KEY = "MIMI_N3_VOCAB_USER_V1";
+      const WRONG_KEY = "MIMI_N3_VOCAB_WRONG_V1"; // { A: [id...], B: [id...], C:[id...] }
+      const STATS_KEY = "MIMI_N3_VOCAB_STATS_V1"; // { [id]: { attempts, wrongs } }
+
+      /**********************
+       * 3) STATE
+       **********************/
+      let mode = "A"; // A/B/C
+      let sessionSize = 50; // 10/20/50
+      let inReview = false;
+
+      let vocabUser = [];
+      let vocabAll = [];
+
+      let orderIds = [];
+      let idx = 0;
+
+      let score = 0;
+      let answered = 0;
+      let locked = false;
+
+      // DOM
+      const wordText = document.getElementById("wordText");
+      const subText = document.getElementById("subText");
+      const promptLabel = document.getElementById("promptLabel");
+      const metaText = document.getElementById("metaText");
+      const optionsEl = document.getElementById("options");
+      const feedbackEl = document.getElementById("feedback");
+      const fbTitle = document.getElementById("fbTitle");
+      const fbRight = document.getElementById("fbRight");
+      const fbJp = document.getElementById("fbJp");
+      const fbVi = document.getElementById("fbVi");
+      const fbSummary = document.getElementById("fbSummary");
+
+      const pillProgress = document.getElementById("pillProgress");
+      const pillMode = document.getElementById("pillMode");
+      const pillWrong = document.getElementById("pillWrong");
+      const scoreText = document.getElementById("scoreText");
+      const answeredText = document.getElementById("answeredText");
+      const percentText = document.getElementById("percentText");
+
+      const btnNext = document.getElementById("btnNext");
+      const btnReview = document.getElementById("btnReview");
+      const btnRestart = document.getElementById("btnRestart");
+      const btnClearWrong = document.getElementById("btnClearWrong");
+
+      const btnModeA = document.getElementById("btnModeA");
+      const btnModeB = document.getElementById("btnModeB");
+      const btnModeC = document.getElementById("btnModeC");
+
+      const btnSize10 = document.getElementById("btnSize10");
+      const btnSize20 = document.getElementById("btnSize20");
+      const btnSize50 = document.getElementById("btnSize50");
+
+      const progressBar = document.getElementById("progressBar");
+
+      const statsBox = document.getElementById("statsBox");
+
+      // modal import
+      const modalImport = document.getElementById("modalImport");
+      const importArea = document.getElementById("importArea");
+      const btnImportOpen = document.getElementById("btnImportOpen");
+      const btnCloseImport = document.getElementById("btnCloseImport");
+      const btnDoImport = document.getElementById("btnDoImport");
+      const btnPasteSample = document.getElementById("btnPasteSample");
+
+      const btnExportUser = document.getElementById("btnExportUser");
+      const btnClearUser = document.getElementById("btnClearUser");
+
+      /**********************
+       * 4) HELPERS
+       **********************/
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function nowId() {
+        return "u-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
+      }
+
+      function safeJSONParse(raw, fallback) {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return fallback;
+        }
+      }
+
+      function loadUserVocab() {
+        const raw = localStorage.getItem(USER_KEY);
+        const parsed = raw ? safeJSONParse(raw, []) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      }
+
+      function saveUserVocab(list) {
+        localStorage.setItem(USER_KEY, JSON.stringify(list));
+      }
+
+      function loadWrongMap() {
+        const raw = localStorage.getItem(WRONG_KEY);
+        const parsed = raw
+          ? safeJSONParse(raw, { A: [], B: [], C: [] })
+          : { A: [], B: [], C: [] };
+        return {
+          A: Array.isArray(parsed.A) ? parsed.A : [],
+          B: Array.isArray(parsed.B) ? parsed.B : [],
+          C: Array.isArray(parsed.C) ? parsed.C : [],
+        };
+      }
+
+      function saveWrongMap(map) {
+        localStorage.setItem(WRONG_KEY, JSON.stringify(map));
+      }
+
+      function loadStatsMap() {
+        const raw = localStorage.getItem(STATS_KEY);
+        const parsed = raw ? safeJSONParse(raw, {}) : {};
+        return parsed && typeof parsed === "object" ? parsed : {};
+      }
+
+      function saveStatsMap(map) {
+        localStorage.setItem(STATS_KEY, JSON.stringify(map));
+      }
+
+      function rebuildVocabAll() {
+        vocabUser = loadUserVocab();
+        vocabAll = [...vocabDefault, ...vocabUser]
+          .map((x) => ({
+            id: x.id ?? nowId(),
+            kanji: String(x.kanji ?? "").trim(),
+            kana: String(x.kana ?? "").trim(),
+            meaning: String(x.meaning ?? "").trim(),
+            jp: String(x.jp ?? "").trim(),
+            vi: String(x.vi ?? "").trim(),
+          }))
+          .filter((x) => x.kanji && x.meaning);
+      }
+
+      function findById(id) {
+        return vocabAll.find((v) => String(v.id) === String(id));
+      }
+
+      function updateModeUI() {
+        btnModeA.classList.toggle("active", mode === "A");
+        btnModeB.classList.toggle("active", mode === "B");
+        btnModeC.classList.toggle("active", mode === "C");
+
+        pillMode.textContent = inReview
+          ? `Mode ${mode} · Review`
+          : `Mode ${mode}`;
+      }
+
+      function updateSizeUI() {
+        btnSize10.classList.toggle("active", sessionSize === 10);
+        btnSize20.classList.toggle("active", sessionSize === 20);
+        btnSize50.classList.toggle("active", sessionSize === 50);
+      }
+
+      function updateScoreUI() {
+        scoreText.textContent = String(score);
+        answeredText.textContent = String(answered);
+        const pct = answered === 0 ? 0 : Math.round((score / answered) * 100);
+        percentText.textContent = String(pct);
+      }
+
+      function updateProgressUI() {
+        const total = orderIds.length || 1;
+        const n = Math.min(idx + 1, total);
+        pillProgress.textContent =
+          idx >= total ? "Xong ✔" : `Câu ${n} / ${total}`;
+        const pct = (idx / total) * 100;
+        progressBar.style.width = pct + "%";
+        metaText.textContent =
+          (inReview ? "Review · " : "") +
+          `Chế độ ${mode} · Câu ${n} / ${total}`;
+      }
+
+      function getWrongCountForMode() {
+        const m = loadWrongMap();
+        return new Set(m[mode] || []).size;
+      }
+
+      function syncWrongPillAndReviewBtn() {
+        const c = getWrongCountForMode();
+        pillWrong.textContent = `Sai: ${c}`;
+        btnReview.disabled = c === 0;
+      }
+
+      function setLocked(value) {
+        locked = value;
+      }
+
+      function getPromptAndOptions(correctId) {
+        const correct = findById(correctId);
+        if (!correct) return null;
+
+        // pick 3 wrong
+        const pool = vocabAll.filter((v) => String(v.id) !== String(correctId));
+        const wrongs = shuffle(pool).slice(0, 3);
+
+        let prompt = "";
+        let label = "";
+        let subtitle = "";
+        let options = [];
+
+        if (mode === "A") {
+          // VI -> JP
+          label = "Nghĩa tiếng Việt";
+          prompt = correct.meaning;
+          subtitle = "Chọn từ tiếng Nhật tương ứng.";
+          options = shuffle([correct, ...wrongs]).map((v) => ({
+            id: v.id,
+            main: v.kanji,
+            sub: v.kana ? `(${v.kana})` : "",
+          }));
+        } else if (mode === "B") {
+          // JP -> VI
+          label = "Từ tiếng Nhật";
+          prompt = `${correct.kanji}${
+            correct.kana ? "（" + correct.kana + "）" : ""
+          }`;
+          subtitle = "Chọn nghĩa tiếng Việt đúng.";
+          options = shuffle([correct, ...wrongs]).map((v) => ({
+            id: v.id,
+            main: v.meaning,
+            sub: "",
+          }));
+        } else {
+          // C: Kana -> JP
+          label = "Cách đọc (Kana)";
+          prompt = correct.kana || "(không có kana)";
+          subtitle = "Chọn chữ Kanji đúng.";
+          options = shuffle([correct, ...wrongs]).map((v) => ({
+            id: v.id,
+            main: v.kanji,
+            sub: v.meaning ? `– ${v.meaning}` : "",
+          }));
+        }
+
+        return { correct, prompt, label, subtitle, options };
+      }
+
+      function renderQuestion() {
+        feedbackEl.style.display = "none";
+        fbTitle.textContent = "";
+        fbRight.textContent = "";
+        fbJp.textContent = "";
+        fbVi.textContent = "";
+        fbSummary.textContent = "";
+        btnNext.disabled = true;
+        setLocked(false);
+
+        if (idx >= orderIds.length) {
+          // end
+          wordText.textContent = inReview
+            ? "Đã ôn xong toàn bộ câu sai của chế độ này ✅"
+            : "Hoàn thành phiên hiện tại ✅";
+          promptLabel.textContent = "Hoàn tất";
+          subText.textContent =
+            getWrongCountForMode() > 0
+              ? "Bạn có thể bấm “Ôn câu sai” để luyện riêng."
+              : "Không còn câu sai nào cho chế độ này. Quá đỉnh!";
+          optionsEl.innerHTML = "";
+          feedbackEl.style.display = "block";
+          fbTitle.textContent = "Tổng kết";
+          fbTitle.className = "fb-title ok";
+          fbSummary.textContent =
+            "Điểm: " +
+            score +
+            "/" +
+            answered +
+            " (" +
+            percentText.textContent +
+            "%).";
+          updateProgressUI();
+          return;
+        }
+
+        const correctId = orderIds[idx];
+        const built = getPromptAndOptions(correctId);
+        if (!built) {
+          idx++;
+          renderQuestion();
+          return;
+        }
+
+        promptLabel.textContent = built.label;
+        wordText.textContent = built.prompt;
+        subText.textContent = built.subtitle;
+
+        optionsEl.innerHTML = "";
+        const keys = ["A", "B", "C", "D"];
+
+        built.options.forEach((opt, i) => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.dataset.optId = String(opt.id);
+          btn.innerHTML = `
+            <div class="opt-left">
+              <div class="opt-key">${keys[i]}</div>
+              <div class="opt-main">${opt.main}</div>
+            </div>
+            <div class="opt-sub">${opt.sub || ""}</div>
+          `;
+          btn.addEventListener("click", () =>
+            handleAnswer(opt.id, built.correct.id, built.correct)
+          );
+          optionsEl.appendChild(btn);
+        });
+
+        updateProgressUI();
+      }
+
+      function bumpStats(correctId, isCorrect) {
+        const stats = loadStatsMap();
+        const key = String(correctId);
+        if (!stats[key]) stats[key] = { attempts: 0, wrongs: 0 };
+        stats[key].attempts++;
+        if (!isCorrect) stats[key].wrongs++;
+        saveStatsMap(stats);
+      }
+
+      function addWrong(correctId) {
+        const wm = loadWrongMap();
+        const set = new Set(wm[mode] || []);
+        set.add(String(correctId));
+        wm[mode] = Array.from(set);
+        saveWrongMap(wm);
+      }
+
+      function removeWrong(correctId) {
+        const wm = loadWrongMap();
+        const set = new Set(wm[mode] || []);
+        set.delete(String(correctId));
+        wm[mode] = Array.from(set);
+        saveWrongMap(wm);
+      }
+
+      function handleAnswer(chosenId, correctId, correctItem) {
+        if (locked) return;
+        setLocked(true);
+
+        answered++;
+
+        const isCorrect = String(chosenId) === String(correctId);
+        if (isCorrect) score++;
+
+        bumpStats(correctId, isCorrect);
+
+        if (isCorrect) {
+          if (inReview) removeWrong(correctId);
+        } else {
+          if (!inReview) addWrong(correctId);
+          if (inReview) addWrong(correctId); // vẫn sai thì giữ lại
+        }
+
+        // disable & paint
+        const buttons = optionsEl.querySelectorAll("button");
+        buttons.forEach((b) => (b.disabled = true));
+        buttons.forEach((b) => {
+          const id = b.dataset.optId;
+          if (String(id) === String(correctId)) b.classList.add("correct");
+          else if (String(id) === String(chosenId) && !isCorrect)
+            b.classList.add("wrong");
+        });
+
+        // feedback
+        feedbackEl.style.display = "block";
+        if (isCorrect) {
+          fbTitle.textContent = "Đúng rồi! ✨";
+          fbTitle.className = "fb-title ok";
+        } else {
+          fbTitle.textContent = "Sai rồi 😭";
+          fbTitle.className = "fb-title no";
+        }
+
+        const rightText =
+          mode === "A"
+            ? `${correctItem.kanji}${
+                correctItem.kana ? "（" + correctItem.kana + "）" : ""
+              }`
+            : mode === "B"
+            ? `${correctItem.meaning}`
+            : `${correctItem.kanji}`;
+
+        fbRight.textContent = `Đáp án đúng: 「${rightText}」`;
+        fbJp.textContent = correctItem.jp ? `例文：${correctItem.jp}` : "";
+        fbVi.textContent = correctItem.vi ? `Dịch：${correctItem.vi}` : "";
+
+        syncWrongPillAndReviewBtn();
+        updateScoreUI();
+
+        const remain = getWrongCountForMode();
+        fbSummary.textContent =
+          remain > 0
+            ? `Còn ${remain} từ đang nằm trong danh sách sai của Mode ${mode}.`
+            : `Không còn từ sai nào trong Mode ${mode}. Tuyệt vời!`;
+
+        btnNext.disabled = false;
+      }
+
+      function startSession(review = false) {
+        inReview = review;
+        updateModeUI();
+
+        const allIds = vocabAll.map((v) => String(v.id));
+        if (!review) {
+          const shuffled = shuffle(allIds);
+          orderIds = shuffled.slice(0, Math.min(sessionSize, shuffled.length));
+        } else {
+          const wm = loadWrongMap();
+          const set = new Set(wm[mode] || []);
+          orderIds = shuffle(Array.from(set));
+        }
+
+        idx = 0;
+        score = 0;
+        answered = 0;
+        updateScoreUI();
+        syncWrongPillAndReviewBtn();
+        renderQuestion();
+      }
+
+      function refreshStatsUI() {
+        const stats = loadStatsMap();
+        const rows = Object.entries(stats)
+          .map(([id, st]) => ({
+            id,
+            attempts: st.attempts || 0,
+            wrongs: st.wrongs || 0,
+          }))
+          .filter((x) => x.wrongs > 0)
+          .sort((a, b) => {
+            if (b.wrongs !== a.wrongs) return b.wrongs - a.wrongs;
+            return b.attempts - a.attempts;
+          })
+          .slice(0, 6);
+
+        if (rows.length === 0) {
+          statsBox.innerHTML =
+            '<div style="font-size:0.86rem;color:#9ca3af;font-style:italic;">Chưa có dữ liệu sai. Làm quiz vài câu là sẽ có thống kê nhé.</div>';
+          return;
+        }
+
+        let html =
+          "<table><thead><tr><th>#</th><th>JP</th><th>VI</th><th>Sai/Tổng</th><th>Tỉ lệ</th></tr></thead><tbody>";
+        rows.forEach((r, i) => {
+          const v = findById(r.id);
+          if (!v) return;
+          const rate =
+            r.attempts === 0 ? 0 : Math.round((r.wrongs / r.attempts) * 100);
+          html += `<tr>
+            <td>${i + 1}</td>
+            <td>${v.kanji}${v.kana ? "（" + v.kana + "）" : ""}</td>
+            <td>${v.meaning}</td>
+            <td>${r.wrongs}/${r.attempts}</td>
+            <td>${rate}%${
+            rate >= 50 ? ' <span class="tag">cần ôn</span>' : ""
+          }</td>
+          </tr>`;
+        });
+        html += "</tbody></table>";
+        statsBox.innerHTML = html;
+      }
+
+      /**********************
+       * 5) IMPORT JSON
+       **********************/
+      function openModal() {
+        modalImport.style.display = "flex";
+      }
+
+      function closeModal() {
+        modalImport.style.display = "none";
+      }
+
+      function normalizeImportedItem(raw) {
+        // chấp nhận nhiều tên field (đỡ đau đầu khi copy)
+        const kanji = (raw.kanji ?? raw.word ?? raw.jpWord ?? "")
+          .toString()
+          .trim();
+        const kana = (raw.kana ?? raw.reading ?? raw.kanaReading ?? "")
+          .toString()
+          .trim();
+        const meaning = (raw.meaning ?? raw.viMeaning ?? raw.translation ?? "")
+          .toString()
+          .trim();
+        const jp = (raw.jp ?? raw.exampleJP ?? "").toString().trim();
+        const vi = (raw.vi ?? raw.exampleVI ?? "").toString().trim();
+
+        if (!kanji || !meaning) return null;
+
+        return {
+          id: raw.id ? String(raw.id) : nowId(),
+          kanji,
+          kana,
+          meaning,
+          jp,
+          vi,
+        };
+      }
+
+      function doImport() {
+        const text = importArea.value.trim();
+        if (!text) {
+          alert("Bạn chưa dán JSON.");
+          return;
+        }
+
+        const parsed = safeJSONParse(text, null);
+        if (!parsed || !Array.isArray(parsed)) {
+          alert("JSON không hợp lệ. Bạn phải dán dạng mảng: [ {...}, {...} ]");
+          return;
+        }
+
+        const normalized = [];
+        parsed.forEach((it) => {
+          const n = normalizeImportedItem(it);
+          if (n) normalized.push(n);
+        });
+
+        if (normalized.length === 0) {
+          alert("Không import được item nào. Cần tối thiểu kanji + meaning.");
+          return;
+        }
+
+        // tránh trùng theo kanji+kana+meaning
+        const existed = loadUserVocab();
+        const keyOf = (x) =>
+          `${x.kanji}__${x.kana}__${x.meaning}`.toLowerCase();
+        const existedKeys = new Set(existed.map(keyOf));
+
+        const merged = [...existed];
+        let added = 0;
+
+        normalized.forEach((n) => {
+          const k = keyOf(n);
+          if (!existedKeys.has(k)) {
+            merged.push(n);
+            existedKeys.add(k);
+            added++;
+          }
+        });
+
+        saveUserVocab(merged);
+        rebuildVocabAll();
+        refreshStatsUI();
+        syncWrongPillAndReviewBtn();
+
+        alert(
+          `✅ Import xong! Đã thêm mới: ${added} từ. (Tổng user vocab: ${merged.length})`
+        );
+        closeModal();
+        startSession(false);
+      }
+
+      /**********************
+       * 6) EVENTS
+       **********************/
+      btnModeA.addEventListener("click", () => {
+        mode = "A";
+        inReview = false;
+        updateModeUI();
+        syncWrongPillAndReviewBtn();
+        startSession(false);
+      });
+      btnModeB.addEventListener("click", () => {
+        mode = "B";
+        inReview = false;
+        updateModeUI();
+        syncWrongPillAndReviewBtn();
+        startSession(false);
+      });
+      btnModeC.addEventListener("click", () => {
+        mode = "C";
+        inReview = false;
+        updateModeUI();
+        syncWrongPillAndReviewBtn();
+        startSession(false);
+      });
+
+      btnSize10.addEventListener("click", () => {
+        sessionSize = 10;
+        updateSizeUI();
+        startSession(false);
+      });
+      btnSize20.addEventListener("click", () => {
+        sessionSize = 20;
+        updateSizeUI();
+        startSession(false);
+      });
+      btnSize50.addEventListener("click", () => {
+        sessionSize = 50;
+        updateSizeUI();
+        startSession(false);
+      });
+
+      btnNext.addEventListener("click", () => {
+        if (idx < orderIds.length) {
+          idx++;
+          renderQuestion();
+        }
+      });
+
+      btnRestart.addEventListener("click", () => {
+        startSession(false);
+      });
+
+      btnReview.addEventListener("click", () => {
+        startSession(true);
+      });
+
+      btnClearWrong.addEventListener("click", () => {
+        if (!confirm(`Xoá toàn bộ câu sai của Mode ${mode}?`)) return;
+        const wm = loadWrongMap();
+        wm[mode] = [];
+        saveWrongMap(wm);
+        syncWrongPillAndReviewBtn();
+        alert("✅ Đã xoá câu sai.");
+      });
+
+      // keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        const key = e.key.toLowerCase();
+        const buttons = optionsEl.querySelectorAll("button");
+        if (!buttons.length) return;
+
+        if (["a", "b", "c", "d"].includes(key)) {
+          const k = key.charCodeAt(0) - 97; // a -> 0
+          if (buttons[k] && !buttons[k].disabled) buttons[k].click();
+        } else if (key === "enter") {
+          if (!btnNext.disabled) btnNext.click();
+        }
+      });
+
+      // import modal
+      btnImportOpen.addEventListener("click", openModal);
+      btnCloseImport.addEventListener("click", closeModal);
+      btnDoImport.addEventListener("click", doImport);
+
+      btnPasteSample.addEventListener("click", () => {
+        const sample = [
+          {
+            kanji: "非常口",
+            kana: "ひじょうぐち",
+            meaning: "cửa thoát hiểm",
+            jp: "非常口はどこですか。",
+            vi: "Lối thoát hiểm ở đâu?",
+          },
+          {
+            kanji: "日常",
+            kana: "にちじょう",
+            meaning: "thường ngày, hằng ngày",
+            jp: "日常の生活は大切です。",
+            vi: "Cuộc sống hằng ngày rất quan trọng.",
+          },
+        ];
+        importArea.value = JSON.stringify(sample, null, 2);
+      });
+
+      // click outside to close
+      modalImport.addEventListener("click", (e) => {
+        if (e.target === modalImport) closeModal();
+      });
+
+      // export / clear user
+      btnExportUser.addEventListener("click", () => {
+        const u = loadUserVocab();
+        const json = JSON.stringify(u, null, 2);
+        // copy nếu được
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(json).then(
+            () => alert("✅ Đã copy JSON (từ đã nhập) vào clipboard!"),
+            () => alert("Mở console để copy tay.")
+          );
+        } else {
+          alert(
+            "Trình duyệt không hỗ trợ clipboard. Bạn có thể copy trong localStorage."
+          );
+        }
+        // đồng thời mở modal để dán/nhìn
+        openModal();
+        importArea.value = json;
+      });
+
+      btnClearUser.addEventListener("click", () => {
+        const u = loadUserVocab();
+        if (u.length === 0) {
+          alert("Không có từ user nào để xoá.");
+          return;
+        }
+        if (
+          !confirm(
+            "Xoá TOÀN BỘ từ bạn đã import? (Không ảnh hưởng data mặc định)"
+          )
+        )
+          return;
+        localStorage.removeItem(USER_KEY);
+        rebuildVocabAll();
+        refreshStatsUI();
+        alert("✅ Đã xoá toàn bộ user vocab.");
+        startSession(false);
+      });
+
+      /**********************
+       * 7) START
+       **********************/
+      rebuildVocabAll();
+      updateModeUI();
+      updateSizeUI();
+      refreshStatsUI();
+      syncWrongPillAndReviewBtn();
+      updateScoreUI();
+      startSession(false);
+    </script>
+  </body>
+</html>
