@@ -510,10 +510,9 @@
       }
       /* --- Swipe gesture smooth --- */
       .modal-box {
-        touch-action: pan-y; /* CHỈ cho phép vuốt dọc */
-        overscroll-behavior: contain;
+        touch-action: none; /* cho phép bắt gesture */
         will-change: transform;
-        transition: all 0.25s ease;
+        transition: transform 0.25s ease;
       }
     </style>
   </head>
@@ -522,7 +521,7 @@
     <div class="wrapper">
       <h1>
         <span class="logo-dot"></span>
-        N3 Quiz
+        N3 Super Quiz OMEGA
       </h1>
 
       <div class="header-row-top">
@@ -1485,9 +1484,6 @@
 
         sheet.addEventListener("touchmove", (e) => {
           if (!isDragging) return;
-
-          // ❗ Nếu nội dung đang scroll → KHÔNG swipe dismiss
-          if (sheet.scrollTop > 0) return;
 
           currentY = e.touches[0].clientY;
           const diff = currentY - startY;
