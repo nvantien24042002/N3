@@ -1,0 +1,122 @@
+[
+    {
+      "id": "17",
+      "type": "kanji",
+      "kanji": "非",
+      "kana": "ヒ",
+      "onyomi": "ヒ",
+      "kunyomi": "",
+      "meaning": "phi, không",
+      "exampleJP": "非常口はどこですか。",
+      "exampleVI": "Lối thoát hiểm ở đâu?",
+      "compounds": [
+        { "word": "非常", "kana": "ひじょう", "vi": "khẩn cấp, cấp bách" },
+        { "word": "非常口", "kana": "ひじょうぐち", "vi": "cửa thoát hiểm" },
+        { "word": "日常", "kana": "にちじょう", "vi": "thường ngày, hàng ngày" }
+      ]
+    },
+    {
+      "id": "18",
+      "type": "kanji",
+      "kanji": "常",
+      "kana": "ジョウ",
+      "onyomi": "ジョウ",
+      "kunyomi": "",
+      "meaning": "thường, thông thường",
+      "exampleJP": "普通は日常のことです。",
+      "exampleVI": "Đó là việc thường ngày.",
+      "compounds": [
+        { "word": "常に", "kana": "つねに", "vi": "luôn luôn" },
+        { "word": "日常", "kana": "にちじょう", "vi": "thường ngày, hằng ngày" },
+        { "word": "正常", "kana": "せいじょう", "vi": "bình thường" }
+      ]
+    },
+    {
+      "id": "19",
+      "type": "kanji",
+      "kanji": "階",
+      "kana": "カイ",
+      "onyomi": "カイ",
+      "kunyomi": "",
+      "meaning": "tầng",
+      "exampleJP": "３階に行きます。",
+      "exampleVI": "Tôi đi lên tầng 3.",
+      "compounds": [
+        { "word": "〜階", "kana": "〜かい", "vi": "tầng ~" },
+        { "word": "階段", "kana": "かいだん", "vi": "cầu thang" }
+      ]
+    },
+    {
+      "id": "20",
+      "type": "kanji",
+      "kanji": "段",
+      "kana": "ダン",
+      "onyomi": "ダン",
+      "kunyomi": "",
+      "meaning": "bậc, cấp độ",
+      "exampleJP": "階段を上がる。",
+      "exampleVI": "Đi lên cầu thang.",
+      "compounds": [
+        { "word": "階段", "kana": "かいだん", "vi": "cầu thang" }
+      ]
+    },
+    {
+      "id": "21",
+      "type": "kanji",
+      "kanji": "箱",
+      "kana": "はこ",
+      "onyomi": "",
+      "kunyomi": "はこ",
+      "meaning": "hộp",
+      "exampleJP": "箱に入れてください。",
+      "exampleVI": "Hãy bỏ vào hộp.",
+      "compounds": [
+        { "word": "箱", "kana": "はこ", "vi": "cái hộp" },
+        { "word": "ごみ箱", "kana": "ごみばこ", "vi": "thùng rác" }
+      ]
+    },
+    {
+      "id": "22",
+      "type": "kanji",
+      "kanji": "危",
+      "kana": "キ",
+      "onyomi": "キ",
+      "kunyomi": "あぶ-ない",
+      "meaning": "nguy hiểm",
+      "exampleJP": "危ないから気をつけて。",
+      "exampleVI": "Nguy hiểm, hãy cẩn thận.",
+      "compounds": [
+        { "word": "危険（な）", "kana": "きけん（な）", "vi": "nguy hiểm" },
+        { "word": "危ない", "kana": "あぶない", "vi": "nguy hiểm, nguy cấp" }
+      ]
+    },
+    {
+      "id": "23",
+      "type": "kanji",
+      "kanji": "険",
+      "kana": "ケン",
+      "onyomi": "ケン",
+      "kunyomi": "",
+      "meaning": "hiểm, nguy hiểm",
+      "exampleJP": "険しい山に登る。",
+      "exampleVI": "Leo lên ngọn núi hiểm trở.",
+      "compounds": [
+        { "word": "危険", "kana": "きけん", "vi": "nguy hiểm" }
+      ]
+    },
+    {
+      "id": "24",
+      "type": "kanji",
+      "kanji": "捨",
+      "kana": "す-てる",
+      "onyomi": "",
+      "kunyomi": "すてる",
+      "meaning": "vứt bỏ, ném đi",
+      "exampleJP": "ごみを捨てないでください。",
+      "exampleVI": "Đừng vứt rác.",
+      "compounds": [
+        { "word": "捨てる", "kana": "すてる", "vi": "vứt bỏ" }
+      ]
+    }
+  ]
+  
