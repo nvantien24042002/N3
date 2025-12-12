@@ -513,10 +513,7 @@
       <div class="header">
         <div class="title-row">
           <div>
-            <div class="title">Mimi N3 Unit 1 – Vocabulary Quiz OMEGA</div>
-            <div class="subtitle">
-              3 chế độ A/B/C · 4 đáp án · Lưu câu sai · Thống kê · Import JSON
-            </div>
+            <div class="title">Vocabulary Quiz</div>
           </div>
 
           <div class="toolbar">
@@ -539,6 +536,9 @@
               >
               · Đúng: <span id="percentText">0</span>%</span
             >
+            <span class="pill">
+              Sum vocabulary : <b id="totalVocabCount">0</b>
+            </span>
           </div>
 
           <div class="pills">
@@ -558,11 +558,6 @@
 
         <div class="progress-wrap">
           <div class="progress" id="progressBar"></div>
-        </div>
-
-        <div class="hint">
-          Gợi ý: desktop dùng phím <b>A,B,C,D</b> chọn đáp án ·
-          <b>Enter</b> sang câu tiếp. (Điện thoại cứ bấm bình thường nha)
         </div>
       </div>
 
@@ -1188,6 +1183,8 @@
             vi: String(x.vi ?? "").trim(),
           }))
           .filter((x) => x.kanji && x.meaning);
+
+        updateTotalVocabUI();
       }
 
       function findById(id) {
@@ -1203,7 +1200,10 @@
           ? `Mode ${mode} · Review`
           : `Mode ${mode}`;
       }
-
+      function updateTotalVocabUI() {
+        document.getElementById("totalVocabCount").textContent =
+          vocabAll.length;
+      }
       function updateSizeUI() {
         btnSize10.classList.toggle("active", sessionSize === 10);
         btnSize20.classList.toggle("active", sessionSize === 20);
@@ -1250,7 +1250,7 @@
 
         // pick 3 wrong
         const pool = vocabAll.filter((v) => String(v.id) !== String(correctId));
-        const wrongs = shuffle(pool).slice(0, 3);
+        const wrongs = shuffle(pool).slice(0, Math.min(3, pool.length));
 
         let prompt = "";
         let label = "";
