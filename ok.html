@@ -528,6 +528,8 @@
         <div class="pill-row">
           <div class="pills">
             <span class="pill gray" id="pillProgress">Câu 1 / 50</span>
+            <span class="pill gray">Chưa gặp: <b id="unseenCount">0</b></span>
+
             <span class="pill" id="pillMode">Mode A</span>
             <span class="pill warn" id="pillWrong">Sai: 0</span>
             <span class="pill gray"
@@ -1045,6 +1047,7 @@
       const USER_KEY = "MIMI_N3_VOCAB_USER_V1";
       const WRONG_KEY = "MIMI_N3_VOCAB_WRONG_V1"; // { A: [id...], B: [id...], C:[id...] }
       const STATS_KEY = "MIMI_N3_VOCAB_STATS_V1"; // { [id]: { attempts, wrongs } }
+      const SEEN_KEY = "MIMI_N3_VOCAB_SEEN_V1"; // { [id]: true }
 
       /**********************
        * 3) STATE
@@ -1166,6 +1169,22 @@
         const parsed = raw ? safeJSONParse(raw, {}) : {};
         return parsed && typeof parsed === "object" ? parsed : {};
       }
+      function loadSeenMap() {
+        const raw = localStorage.getItem(SEEN_KEY);
+        const parsed = raw ? safeJSONParse(raw, {}) : {};
+        return parsed && typeof parsed === "object" ? parsed : {};
+      }
+
+      function markSeen(id) {
+        const seen = loadSeenMap();
+        seen[String(id)] = true;
+        localStorage.setItem(SEEN_KEY, JSON.stringify(seen));
+      }
+
+      function isSeen(id) {
+        const seen = loadSeenMap();
+        return !!seen[String(id)];
+      }
 
       function saveStatsMap(map) {
         localStorage.setItem(STATS_KEY, JSON.stringify(map));
@@ -1185,6 +1204,7 @@
           .filter((x) => x.kanji && x.meaning);
 
         updateTotalVocabUI();
+        updateUnseenUI();
       }
 
       function findById(id) {
@@ -1293,6 +1313,14 @@
 
         return { correct, prompt, label, subtitle, options };
       }
+      function countUnseenVocab() {
+        const seen = loadSeenMap();
+        return vocabAll.filter((v) => !seen[String(v.id)]).length;
+      }
+
+      function updateUnseenUI() {
+        document.getElementById("unseenCount").textContent = countUnseenVocab();
+      }
 
       function renderQuestion() {
         feedbackEl.style.display = "none";
@@ -1349,13 +1377,22 @@
           const btn = document.createElement("button");
           btn.className = "option-btn";
           btn.dataset.optId = String(opt.id);
+          const isUserWord = vocabUser.some(
+            (v) => String(v.id) === String(opt.id)
+          );
+          const showNew = isUserWord && !isSeen(opt.id);
+
           btn.innerHTML = `
             <div class="opt-left">
               <div class="opt-key">${keys[i]}</div>
-              <div class="opt-main">${opt.main}</div>
+              <div class="opt-main">
+                ${opt.main}
+                ${showNew ? '<span class="tag">NEW</span>' : ""}
+              </div>
             </div>
             <div class="opt-sub">${opt.sub || ""}</div>
           `;
+
           btn.addEventListener("click", () =>
             handleAnswer(opt.id, built.correct.id, built.correct)
           );
@@ -1391,6 +1428,7 @@
       }
 
       function handleAnswer(chosenId, correctId, correctItem) {
+        markSeen(correctId);
         if (locked) return;
         setLocked(true);
 
@@ -1451,6 +1489,8 @@
             : `Không còn từ sai nào trong Mode ${mode}. Tuyệt vời!`;
 
         btnNext.disabled = false;
+        markSeen(correctId);
+        updateUnseenUI();
       }
 
       function startSession(review = false) {
@@ -1606,6 +1646,7 @@
         );
         closeModal();
         startSession(false);
+        updateUnseenUI();
       }
 
       /**********************
