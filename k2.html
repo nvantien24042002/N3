@@ -511,7 +511,7 @@
       }
       /* --- Swipe gesture smooth --- */
       .modal-box {
-        touch-action: none; /* cho phép bắt gesture */
+        touch-action: pan-y;
         will-change: transform;
         transition: transform 0.25s ease;
       }
@@ -1469,23 +1469,23 @@
       /* ==================== SWIPE TO DISMISS (MULTI MODAL SAFE) ==================== */
       document.querySelectorAll(".modal-overlay").forEach((overlay) => {
         const sheet = overlay.querySelector(".modal-box");
-        if (!sheet) return;
+        const handle = overlay.querySelector(".sheet-handle");
+        if (!sheet || !handle) return;
 
         let startY = 0;
         let currentY = 0;
         let isDragging = false;
         const CLOSE_THRESHOLD = 120;
 
-        sheet.addEventListener("touchstart", (e) => {
+        handle.addEventListener("touchstart", (e) => {
           startY = e.touches[0].clientY;
           currentY = startY;
           isDragging = true;
           sheet.style.transition = "none";
         });
 
-        sheet.addEventListener("touchmove", (e) => {
+        handle.addEventListener("touchmove", (e) => {
           if (!isDragging) return;
-
           currentY = e.touches[0].clientY;
           const diff = currentY - startY;
 
@@ -1494,12 +1494,12 @@
           }
         });
 
-        sheet.addEventListener("touchend", () => {
+        handle.addEventListener("touchend", () => {
+          if (!isDragging) return;
           isDragging = false;
           sheet.style.transition = "transform 0.25s ease";
 
           const diff = currentY - startY;
-
           if (diff > CLOSE_THRESHOLD) {
             sheet.style.transform = "translateY(120%)";
             setTimeout(() => {
