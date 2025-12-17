@@ -583,6 +583,7 @@
           <button class="btn primary" id="btnNext" disabled>➡ Câu tiếp</button>
           <button class="btn" id="btnReview" disabled>🧪 Ôn câu sai</button>
           <button class="btn" id="btnRestart">🔁 Làm lại</button>
+          <button class="btn" id="btnReviewUser">📚 Ôn từ đã nhập</button>
           <button class="btn danger" id="btnClearWrong">🧹 Xoá câu sai</button>
         </div>
       </div>
@@ -1050,6 +1051,7 @@
       let mode = "A"; // A/B/C
       let sessionSize = 50; // 10/20/50
       let inReview = false;
+      let reviewType = "ALL"; // ALL | WRONG | USER
 
       let vocabUser = [];
       let vocabAll = [];
@@ -1211,9 +1213,15 @@
         btnModeB.classList.toggle("active", mode === "B");
         btnModeC.classList.toggle("active", mode === "C");
 
-        pillMode.textContent = inReview
-          ? `Mode ${mode} · Review`
-          : `Mode ${mode}`;
+        // pillMode.textContent = inReview
+        //   ? `Mode ${mode} · Review`
+        //   : `Mode ${mode}`;
+        pillMode.textContent =
+          reviewType === "USER"
+            ? `Mode ${mode} · User`
+            : inReview
+            ? `Mode ${mode} · Review`
+            : `Mode ${mode}`;
       }
       function updateTotalVocabUI() {
         document.getElementById("totalVocabCount").textContent =
@@ -1264,7 +1272,10 @@
         if (!correct) return null;
 
         // pick 3 wrong
-        const pool = vocabAll.filter((v) => String(v.id) !== String(correctId));
+        const sourcePool = reviewType === "USER" ? vocabUser : vocabAll;
+        const pool = sourcePool.filter(
+          (v) => String(v.id) !== String(correctId)
+        );
         const wrongs = shuffle(pool).slice(0, Math.min(3, pool.length));
 
         let prompt = "";
@@ -1492,19 +1503,30 @@
         inReview = review;
         updateModeUI();
 
-        const allIds = vocabAll.map((v) => String(v.id));
-        if (!review) {
-          const shuffled = shuffle(allIds);
-          orderIds = shuffled.slice(0, Math.min(sessionSize, shuffled.length));
-        } else {
+        let ids = [];
+
+        if (reviewType === "USER") {
+          // ⭐ chỉ lấy vocab user
+          ids = vocabUser.map((v) => String(v.id));
+        } else if (reviewType === "WRONG") {
           const wm = loadWrongMap();
-          const set = new Set(wm[mode] || []);
-          orderIds = shuffle(Array.from(set));
+          ids = wm[mode] || [];
+        } else {
+          // ALL
+          ids = vocabAll.map((v) => String(v.id));
         }
 
+        if (!review && reviewType === "ALL") {
+          ids = shuffle(ids).slice(0, Math.min(sessionSize, ids.length));
+        } else {
+          ids = shuffle(ids);
+        }
+
+        orderIds = ids;
         idx = 0;
         score = 0;
         answered = 0;
+
         updateScoreUI();
         syncWrongPillAndReviewBtn();
         renderQuestion();
@@ -1647,6 +1669,20 @@
       /**********************
        * 6) EVENTS
        **********************/
+      const btnReviewUser = document.getElementById("btnReviewUser");
+
+      btnReviewUser.addEventListener("click", () => {
+        if (vocabUser.length === 0) {
+          alert("⚠️ Bạn chưa import từ vựng nào.");
+          return;
+        }
+        reviewType = "USER";
+        startSession(true);
+      });
+      btnRestart.addEventListener("click", () => {
+        reviewType = "ALL";
+        startSession(false);
+      });
       btnModeA.addEventListener("click", () => {
         mode = "A";
         inReview = false;
@@ -1697,6 +1733,7 @@
       });
 
       btnReview.addEventListener("click", () => {
+        reviewType = "WRONG";
         startSession(true);
       });
 
