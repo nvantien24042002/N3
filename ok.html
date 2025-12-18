@@ -1051,7 +1051,6 @@
        **********************/
       let mode = "A"; // A/B/C
       let sessionSize = 50; // 10/20/50
-      let inReview = false;
       let reviewType = "ALL"; // ALL | WRONG | USER
 
       let vocabUser = [];
@@ -1115,6 +1114,16 @@
       /**********************
        * 4) HELPERS
        **********************/
+      function updateSessionSizeAvailability() {
+        const disabled = reviewType !== "ALL";
+
+        [btnSize10, btnSize20, btnSize50].forEach((btn) => {
+          btn.disabled = disabled;
+          btn.style.opacity = disabled ? "0.5" : "1";
+          btn.style.cursor = disabled ? "not-allowed" : "pointer";
+        });
+      }
+
       function shuffle(arr) {
         const a = [...arr];
         for (let i = a.length - 1; i > 0; i--) {
@@ -1167,6 +1176,38 @@
         const parsed = raw ? safeJSONParse(raw, {}) : {};
         return parsed && typeof parsed === "object" ? parsed : {};
       }
+      function calcMastery() {
+        const stats = loadStatsMap();
+        const total = vocabAll.length;
+
+        let mastered = 0;
+
+        vocabAll.forEach((v) => {
+          const s = stats[String(v.id)];
+          if (!s) return;
+
+          const attempts = s.attempts || 0;
+          const wrongs = s.wrongs || 0;
+          const correct = attempts - wrongs;
+
+          // điều kiện ĐÃ THUỘC
+          if (attempts >= 3 && correct / attempts >= 0.8) {
+            mastered++;
+          }
+        });
+
+        const percent = total === 0 ? 0 : Math.round((mastered / total) * 100);
+
+        return { mastered, total, percent };
+      }
+
+      function updateMasteryUI() {
+        const { mastered, total, percent } = calcMastery();
+        document.getElementById(
+          "pillMastery"
+        ).textContent = `Thuộc: ${percent}% (${mastered}/${total})`;
+      }
+
       function loadSeenMap() {
         const raw = localStorage.getItem(SEEN_KEY);
         const parsed = raw ? safeJSONParse(raw, {}) : {};
@@ -1214,16 +1255,13 @@
         btnModeB.classList.toggle("active", mode === "B");
         btnModeC.classList.toggle("active", mode === "C");
 
-        // pillMode.textContent = inReview
-        //   ? `Mode ${mode} · Review`
-        //   : `Mode ${mode}`;
-        pillMode.textContent =
-          reviewType === "USER"
-            ? `Mode ${mode} · User`
-            : inReview
-            ? `Mode ${mode} · Review`
-            : `Mode ${mode}`;
+        let suffix = "";
+        if (reviewType === "WRONG") suffix = " · Review";
+        if (reviewType === "USER") suffix = " · User";
+
+        pillMode.textContent = `Mode ${mode}${suffix}`;
       }
+
       function updateTotalVocabUI() {
         document.getElementById("totalVocabCount").textContent =
           vocabAll.length;
@@ -1248,9 +1286,14 @@
           idx >= total ? "Xong ✔" : `Câu ${n} / ${total}`;
         const pct = (idx / total) * 100;
         progressBar.style.width = pct + "%";
-        metaText.textContent =
-          (inReview ? "Review · " : "") +
-          `Chế độ ${mode} · Câu ${n} / ${total}`;
+        const reviewLabel =
+          reviewType === "WRONG"
+            ? "Review · "
+            : reviewType === "USER"
+            ? "User · "
+            : "";
+
+        metaText.textContent = `${reviewLabel}Chế độ ${mode} · Câu ${n} / ${total}`;
       }
 
       function getWrongCountForMode() {
@@ -1261,7 +1304,7 @@
       function syncWrongPillAndReviewBtn() {
         const c = getWrongCountForMode();
         pillWrong.textContent = `Sai: ${c}`;
-        btnReview.disabled = c === 0;
+        btnReview.disabled = c === 0 || reviewType !== "ALL";
       }
 
       function setLocked(value) {
@@ -1340,10 +1383,12 @@
         setLocked(false);
 
         if (idx >= orderIds.length) {
+          const isReview = reviewType !== "ALL";
           // end
-          wordText.textContent = inReview
-            ? "Đã ôn xong toàn bộ câu sai của chế độ này ✅"
+          wordText.textContent = isReview
+            ? "Đã ôn xong toàn bộ danh sách ôn tập ✅"
             : "Hoàn thành phiên hiện tại ✅";
+
           promptLabel.textContent = "Hoàn tất";
           subText.textContent =
             getWrongCountForMode() > 0
@@ -1390,15 +1435,15 @@
           const showNew = isUserWord && !isSeen(opt.id);
 
           btn.innerHTML = `
-            <div class="opt-left">
-              <div class="opt-key">${keys[i]}</div>
-              <div class="opt-main">
-                ${opt.main}
-                ${showNew ? '<span class="tag">NEW</span>' : ""}
-              </div>
-            </div>
-            <div class="opt-sub">${opt.sub || ""}</div>
-          `;
+                  <div class="opt-left">
+                    <div class="opt-key">${keys[i]}</div>
+                    <div class="opt-main">
+                      ${opt.main}
+                      ${showNew ? '<span class="tag">NEW</span>' : ""}
+                    </div>
+                  </div>
+                  <div class="opt-sub">${opt.sub || ""}</div>
+                `;
 
           btn.addEventListener("click", () =>
             handleAnswer(opt.id, built.correct.id, built.correct)
@@ -1435,22 +1480,22 @@
       }
 
       function handleAnswer(chosenId, correctId, correctItem) {
-        markSeen(correctId);
         if (locked) return;
         setLocked(true);
-
+        markSeen(correctId);
         answered++;
 
         const isCorrect = String(chosenId) === String(correctId);
         if (isCorrect) score++;
 
         bumpStats(correctId, isCorrect);
+        const isReview = reviewType !== "ALL";
 
-        if (isCorrect) {
-          if (inReview) removeWrong(correctId);
-        } else {
-          if (!inReview) addWrong(correctId);
-          if (inReview) addWrong(correctId); // vẫn sai thì giữ lại
+        if (isCorrect && isReview) {
+          removeWrong(correctId);
+        }
+        if (!isCorrect && reviewType !== "USER") {
+          addWrong(correctId);
         }
 
         // disable & paint
@@ -1494,14 +1539,12 @@
           remain > 0
             ? `Còn ${remain} từ đang nằm trong danh sách sai của Mode ${mode}.`
             : `Không còn từ sai nào trong Mode ${mode}. Tuyệt vời!`;
-
+        updateMasteryUI();
         btnNext.disabled = false;
-        markSeen(correctId);
         updateUnseenUI();
       }
 
-      function startSession(review = false) {
-        inReview = review;
+      function startSession() {
         updateModeUI();
 
         let ids = [];
@@ -1517,10 +1560,10 @@
           ids = vocabAll.map((v) => String(v.id));
         }
 
-        if (!review && reviewType === "ALL") {
+        if (reviewType === "ALL") {
           ids = shuffle(ids).slice(0, Math.min(sessionSize, ids.length));
         } else {
-          ids = shuffle(ids);
+          ids = shuffle(ids); // USER / WRONG: lấy hết
         }
 
         orderIds = ids;
@@ -1529,48 +1572,74 @@
         answered = 0;
 
         updateScoreUI();
+        updateMasteryUI();
         syncWrongPillAndReviewBtn();
         renderQuestion();
       }
 
       function refreshStatsUI() {
         const stats = loadStatsMap();
-        const rows = Object.entries(stats)
-          .map(([id, st]) => ({
-            id,
-            attempts: st.attempts || 0,
-            wrongs: st.wrongs || 0,
-          }))
-          .filter((x) => x.wrongs > 0)
-          .sort((a, b) => {
-            if (b.wrongs !== a.wrongs) return b.wrongs - a.wrongs;
-            return b.attempts - a.attempts;
-          })
-          .slice(0, 6);
 
-        if (rows.length === 0) {
-          statsBox.innerHTML =
-            '<div style="font-size:0.86rem;color:#9ca3af;font-style:italic;">Chưa có dữ liệu sai. Làm quiz vài câu là sẽ có thống kê nhé.</div>';
+        // Lấy danh sách từ yếu theo accuracy
+        const weakList = vocabAll
+          .map((v) => {
+            const s = stats[String(v.id)];
+            if (!s || s.attempts < 2) return null;
+
+            const acc = (s.attempts - s.wrongs) / s.attempts;
+            if (acc >= 0.5) return null;
+
+            return {
+              ...v,
+              attempts: s.attempts,
+              wrongs: s.wrongs,
+              acc,
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.acc - b.acc) // yếu nhất lên đầu
+          .slice(0, 10); // top 10 yếu nhất
+
+        if (weakList.length === 0) {
+          statsBox.innerHTML = `
+            <div style="font-size:0.86rem;color:#9ca3af;font-style:italic;">
+              🎉 Không có từ yếu (accuracy &lt; 50%). Rất tốt!
+            </div>`;
           return;
         }
 
-        let html =
-          "<table><thead><tr><th>#</th><th>JP</th><th>VI</th><th>Sai/Tổng</th><th>Tỉ lệ</th></tr></thead><tbody>";
-        rows.forEach((r, i) => {
-          const v = findById(r.id);
-          if (!v) return;
-          const rate =
-            r.attempts === 0 ? 0 : Math.round((r.wrongs / r.attempts) * 100);
-          html += `<tr>
-            <td>${i + 1}</td>
-            <td>${v.kanji}${v.kana ? "（" + v.kana + "）" : ""}</td>
-            <td>${v.meaning}</td>
-            <td>${r.wrongs}/${r.attempts}</td>
-            <td>${rate}%${
-            rate >= 50 ? ' <span class="tag">cần ôn</span>' : ""
-          }</td>
-          </tr>`;
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>JP</th>
+                <th>VI</th>
+                <th>Đúng/Tổng</th>
+                <th>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        weakList.forEach((v, i) => {
+          const accPct = Math.round(v.acc * 100);
+          const tag =
+            accPct < 30
+              ? `<span class="tag">RẤT YẾU</span>`
+              : `<span class="tag" style="background:#ffedd5;color:#9a3412">YẾU</span>`;
+
+          html += `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${v.kanji}${v.kana ? "（" + v.kana + "）" : ""}</td>
+              <td>${v.meaning}</td>
+              <td>${v.attempts - v.wrongs}/${v.attempts}</td>
+              <td>${accPct}% ${tag}</td>
+            </tr>
+          `;
         });
+
         html += "</tbody></table>";
         statsBox.innerHTML = html;
       }
@@ -1663,7 +1732,8 @@
           `✅ Import xong! Đã thêm mới: ${added} từ. (Tổng user vocab: ${merged.length})`
         );
         closeModal();
-        startSession(false);
+        startSession();
+
         updateUnseenUI();
       }
 
@@ -1678,48 +1748,54 @@
           return;
         }
         reviewType = "USER";
-        startSession(true);
+        updateSessionSizeAvailability();
+
+        startSession();
       });
       btnRestart.addEventListener("click", () => {
         reviewType = "ALL";
-        startSession(false);
+        updateSessionSizeAvailability();
+        startSession();
       });
       btnModeA.addEventListener("click", () => {
         mode = "A";
-        inReview = false;
-        updateModeUI();
+        reviewType = "ALL";
         syncWrongPillAndReviewBtn();
-        startSession(false);
+        updateSessionSizeAvailability();
+
+        startSession();
       });
       btnModeB.addEventListener("click", () => {
         mode = "B";
-        inReview = false;
-        updateModeUI();
+        reviewType = "ALL";
         syncWrongPillAndReviewBtn();
-        startSession(false);
+        updateSessionSizeAvailability();
+
+        startSession();
       });
       btnModeC.addEventListener("click", () => {
         mode = "C";
-        inReview = false;
-        updateModeUI();
+        reviewType = "ALL";
         syncWrongPillAndReviewBtn();
-        startSession(false);
+        updateSessionSizeAvailability();
+
+        startSession();
       });
 
       btnSize10.addEventListener("click", () => {
         sessionSize = 10;
         updateSizeUI();
-        startSession(false);
+        startSession();
       });
       btnSize20.addEventListener("click", () => {
         sessionSize = 20;
         updateSizeUI();
-        startSession(false);
+        startSession();
       });
       btnSize50.addEventListener("click", () => {
         sessionSize = 50;
         updateSizeUI();
-        startSession(false);
+        startSession();
       });
 
       btnNext.addEventListener("click", () => {
@@ -1729,13 +1805,10 @@
         }
       });
 
-      btnRestart.addEventListener("click", () => {
-        startSession(false);
-      });
-
       btnReview.addEventListener("click", () => {
         reviewType = "WRONG";
-        startSession(true);
+        updateSessionSizeAvailability();
+        startSession();
       });
 
       btnClearWrong.addEventListener("click", () => {
@@ -1827,19 +1900,20 @@
         rebuildVocabAll();
         refreshStatsUI();
         alert("✅ Đã xoá toàn bộ user vocab.");
-        startSession(false);
+        startSession();
       });
 
       /**********************
        * 7) START
        **********************/
+      updateSessionSizeAvailability();
       rebuildVocabAll();
-      updateModeUI();
       updateSizeUI();
       refreshStatsUI();
       syncWrongPillAndReviewBtn();
       updateScoreUI();
-      startSession(false);
+      updateMasteryUI();
+      startSession();
     </script>
   </body>
 </html>
